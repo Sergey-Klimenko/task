@@ -1,8 +1,9 @@
 import {AfterViewInit, Component, OnDestroy} from '@angular/core';
-import {fromEvent, Subscription} from 'rxjs';
-import {map} from 'rxjs/operators';
+import {Subject, Subscription} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, switchMap} from 'rxjs/operators';
 import {AppService} from './app.service';
 import {SearchResults} from './app.model';
+import {QueryParameters} from './app.constants';
 
 
 @Component({
@@ -13,7 +14,7 @@ import {SearchResults} from './app.model';
 export class AppComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription;
   searchResults: SearchResults;
-  timeout: number;
+  searchStringSubject = new Subject<string>();
 
   constructor(
     private service: AppService
@@ -21,37 +22,21 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    const input = document.getElementById('searchInput');
-    const stream$ = fromEvent(input, 'keyup');
-    this.subscription = stream$.pipe(
-      // @ts-ignore
-      map((event: KeyboardEvent) => event.target.value)
-    ).subscribe(searchString => {
-        if (searchString.length > 3) {
-          if (this.timeout) {
-            clearTimeout(this.timeout);
-          }
-          this.debounce(500, this.startSearch(searchString));
-        }
-      }
-    );
+    this.subscription = this.searchStringSubject
+      .pipe(
+        map(searchRequest => QueryParameters.SEARCH + searchRequest),
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap(searchRequest => this.service.getSearch(searchRequest))
+      )
+      .subscribe((result: SearchResults) => this.searchResults = result,
+        error => console.log(error));
   }
 
-  debounce(delay, callback) {
-    if (this.timeout) {
-      clearTimeout(this.timeout);
+  search(searchString: string) {
+    if (searchString.length > 3) {
+      this.searchStringSubject.next(searchString);
     }
-    this.timeout = setTimeout(callback, delay);
-  }
-
-  startSearch(searchString) {
-    return () => {
-      let searchRequest = '?q=';
-      searchRequest += searchString;
-      this.service.getSearch(searchRequest).subscribe((result: SearchResults) => {
-        this.searchResults = result;
-      });
-    };
   }
 
   ngOnDestroy(): void {

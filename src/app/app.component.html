@@ -1,26 +1,5 @@
 <div class="input-field">
-  <label for="searchInput">Введите поисковый запрос: </label><input id="searchInput">
+  <label for="searchInput">Поиск по репозиторям GIT HUB: </label>
+  <input id="searchInput" placeholder="Введите ключевое слово для поиска" (input)="search($event.target.value)" >
 </div>
-<div *ngIf="searchResults">
-  <h4>Всего найдено: {{searchResults.total_count}}</h4>
-  <div *ngFor="let item of searchResults.items">
-    <a href="{{item.html_url}}">
-      <nz-card style="width:100%">
-        <div class="ui-g" style="display: flex;">
-          <div class="ui-g-3 img-container">
-            <img src="{{item.owner.avatar_url}}" alt="">
-          </div>
-          <div class="ui-g-9">
-            <div class="info-container">
-              <p>Название: {{item.full_name}}</p>
-              <p>Описание: {{item.description}}</p>
-              <p>Количество просмотров: {{item.watchers_count}}</p>
-              <p>Количество звёзд: {{item.stargazers_count}}</p>
-              <p>Количество Форков: {{item.forks_count}}</p>
-            </div>
-          </div>
-        </div>
-      </nz-card>
-    </a>
-  </div>
-</div>
+<app-search-result [searchResults]=searchResults></app-search-result>

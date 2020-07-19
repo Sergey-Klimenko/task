@@ -1,0 +1,21 @@
+<div *ngIf="searchResults?.items">
+  <h4>Всего найдено: {{searchResults.total_count}}</h4>
+  <div *ngFor="let item of searchResults.items">
+    <nz-card style="width:100%" [nzBodyStyle]="{padding: 0, margin: '10px'}" (click)="openRepoInNewTab(item.html_url)">
+      <div class="ui-g main-container" style="display: flex;">
+        <div class="ui-g-3 img-container">
+          <img src="{{item.owner?.avatar_url}}" alt="">
+        </div>
+        <div class="ui-g-9">
+          <div class="info-container">
+            <p>Название: {{item.full_name}}</p>
+            <p>Описание: {{item.description}}</p>
+            <p>Количество просмотров: {{item.watchers_count}}</p>
+            <p>Количество звёзд: {{item.stargazers_count}}</p>
+            <p>Количество Форков: {{item.forks_count}}</p>
+          </div>
+        </div>
+      </div>
+    </nz-card>
+  </div>
+</div>

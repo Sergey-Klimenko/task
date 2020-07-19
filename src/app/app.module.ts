@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {PostComponent} from './post/post.component';
+import {AppSearchResultComponent} from './post/app.search.result.component';
 
 import { registerLocaleData } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -27,7 +27,7 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 @NgModule({
   declarations: [
     AppComponent,
-    PostComponent,
+    AppSearchResultComponent,
   ],
   imports: [
     BrowserModule,
