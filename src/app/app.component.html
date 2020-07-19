@@ -1,23 +1,26 @@
-<!-- NG-ZORRO -->
-<!--<a href="https://github.com/NG-ZORRO/ng-zorro-antd" target="_blank"-->
-<!--   style="display: flex;align-items: center;justify-content: center;height: 100%;width: 100%;">-->
-<!--  <img height="300" src="https://img.alicdn.com/tfs/TB1X.qJJgHqK1RjSZFgXXa7JXXa-89-131.svg">-->
-<!--</a>-->
 <div class="input-field">
   <label for="searchInput">Введите поисковый запрос: </label><input id="searchInput">
 </div>
+<div *ngIf="searchResults">
+  <div *ngFor="let item of searchResults">
+    <a href="{{item.html_url}}">
+      <nz-card style="width:100%">
+        <div class="ui-g" style="display: flex;">
+          <div class="ui-g-3" style="display: flex; justify-content: space-around; margin-right: 30px">
+            <img src="{{item.owner.avatar_url}}" style="width: 80px; height: 80px; margin: auto; border-radius: 40px">
+          </div>
+          <div class="ui-g-9">
+            <div class="info-container">
+              <p>Название: {{item.full_name}}</p>
+              <p>Описание: {{item.description}}</p>
+              <p>Количество просмотров: {{item.watchers_count}}</p>
+              <p>Количество звёзд: {{item.score}}</p>
+              <p>Количество Форков: {{item.forks_count}}</p>
+            </div>
+          </div>
 
-<nz-card style="width:300px;">
-</nz-card>
-<ng-template #coverTemplate>
-  <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-</ng-template>
-<ng-template #actionSetting>
-  <i nz-icon nzType="setting"></i>
-</ng-template>
-<ng-template #actionEdit>
-  <i nz-icon nzType="edit"></i>
-</ng-template>
-<ng-template #actionEllipsis>
-  <i nz-icon nzType="ellipsis"></i>
-</ng-template>
+        </div>
+      </nz-card>
+    </a>
+  </div>
+</div>

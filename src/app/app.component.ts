@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {BehaviorSubject, fromEvent, Subject, Subscription} from 'rxjs';
-import {Element} from '@angular/compiler';
+import {AfterViewInit, Component, OnDestroy} from '@angular/core';
+import {fromEvent, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AppService} from './app.service';
-import { NzCardModule } from 'ng-zorro-antd/card';
+
 
 @Component({
   selector: 'app-root',
@@ -13,6 +12,7 @@ import { NzCardModule } from 'ng-zorro-antd/card';
 export class AppComponent implements AfterViewInit, OnDestroy {
   // subject: Subject<number> = new Subject<number>();
   sub: Subscription;
+  searchResults = [];
   // @ViewChild('searchInput', {static: false}) searchInput: ElementRef<HTMLInputElement>;
   timeout: any;
 
@@ -32,7 +32,11 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       let request = '?q=';
       request += val;
       console.log(request);
-      this.service.getSearch(request).subscribe(v => console.log(v));
+      this.service.getSearch(request).subscribe(v => {
+        console.log(v);
+        // @ts-ignore
+        this.searchResults = v.items;
+      });
     };
   }
 
@@ -49,7 +53,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           if (this.timeout) {
             clearTimeout(this.timeout);
           }
-          this.debounce(3000, this.func(val));
+          this.debounce(500, this.func(val));
         }
       }
     ));
