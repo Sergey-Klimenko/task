@@ -2,6 +2,7 @@ import {AfterViewInit, Component, OnDestroy} from '@angular/core';
 import {fromEvent, Subscription} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {AppService} from './app.service';
+import {SearchResults} from './app.model';
 
 
 @Component({
@@ -10,24 +11,17 @@ import {AppService} from './app.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  // subject: Subject<number> = new Subject<number>();
   sub: Subscription;
-  searchResults = [];
-  // @ViewChild('searchInput', {static: false}) searchInput: ElementRef<HTMLInputElement>;
-  timeout: any;
+  searchResults: SearchResults;
+  timeout: number;
 
   constructor(
     private service: AppService
   ) {
-    // this.subject = new Subject();
-    // this.sub = this.subject.subscribe(value => {
-    //   console.log('subscribe', value);
-    // });
   }
 
   func(val) {
     return () => {
-
       console.log(val);
       let request = '?q=';
       request += val;
@@ -35,20 +29,19 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       this.service.getSearch(request).subscribe(v => {
         console.log(v);
         // @ts-ignore
-        this.searchResults = v.items;
+        this.searchResults = v;
       });
     };
   }
 
 
   ngAfterViewInit() {
-    // const stream$ = fromEvent(this.searchInput.nativeElement, 'onkeyup');
     const input = document.getElementById('searchInput');
     const stream$ = fromEvent(input, 'keyup');
     this.sub = stream$.pipe(
       // @ts-ignore
       map(item => item.target.value)
-    ).subscribe((val => {
+    ).subscribe(val => {
         if (val.length > 3) {
           if (this.timeout) {
             clearTimeout(this.timeout);
@@ -56,7 +49,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
           this.debounce(500, this.func(val));
         }
       }
-    ));
+    );
   }
 
   stop() {
@@ -67,11 +60,10 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
-    this.timeout = setTimeout(cb, 2000);
+    this.timeout = setTimeout(cb, ms);
   }
 
   ngOnDestroy(): void {
     this.stop();
-    //  лучше сделать как он говорил через интерфейс, и лучше прикрутить их библиотечку
   }
 }

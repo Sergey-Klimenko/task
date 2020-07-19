@@ -2,23 +2,23 @@
   <label for="searchInput">Введите поисковый запрос: </label><input id="searchInput">
 </div>
 <div *ngIf="searchResults">
-  <div *ngFor="let item of searchResults">
+  <h4>Всего найдено: {{searchResults.total_count}}</h4>
+  <div *ngFor="let item of searchResults.items">
     <a href="{{item.html_url}}">
       <nz-card style="width:100%">
         <div class="ui-g" style="display: flex;">
-          <div class="ui-g-3" style="display: flex; justify-content: space-around; margin-right: 30px">
-            <img src="{{item.owner.avatar_url}}" style="width: 80px; height: 80px; margin: auto; border-radius: 40px">
+          <div class="ui-g-3 img-container">
+            <img src="{{item.owner.avatar_url}}">
           </div>
           <div class="ui-g-9">
             <div class="info-container">
               <p>Название: {{item.full_name}}</p>
               <p>Описание: {{item.description}}</p>
               <p>Количество просмотров: {{item.watchers_count}}</p>
-              <p>Количество звёзд: {{item.score}}</p>
+              <p>Количество звёзд: {{item.stargazers_count}}</p>
               <p>Количество Форков: {{item.forks_count}}</p>
             </div>
           </div>
-
         </div>
       </nz-card>
     </a>

@@ -17,8 +17,6 @@ export class AppService {
   }
 
   public getSearch(params: string) {
-    console.log('environment.server_api', environment.server_api);
-    console.log('routes.search', routes.search);
     return this.http.get(environment.server_api + routes.search() + params);
   }
 }
