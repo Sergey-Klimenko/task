@@ -1,6 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
-import {AppSearchResultComponent} from './post/app.search.result.component';
+import {AppSearchResultComponent} from './app.search.result/app.search.result.component';
 
 import { registerLocaleData } from '@angular/common';
 import { DragDropModule } from '@angular/cdk/drag-drop';
