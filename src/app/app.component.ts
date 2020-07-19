@@ -11,7 +11,7 @@ import {SearchResults} from './app.model';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements AfterViewInit, OnDestroy {
-  sub: Subscription;
+  subscription: Subscription;
   searchResults: SearchResults;
   timeout: number;
 
@@ -20,50 +20,41 @@ export class AppComponent implements AfterViewInit, OnDestroy {
   ) {
   }
 
-  func(val) {
-    return () => {
-      console.log(val);
-      let request = '?q=';
-      request += val;
-      console.log(request);
-      this.service.getSearch(request).subscribe(v => {
-        console.log(v);
-        // @ts-ignore
-        this.searchResults = v;
-      });
-    };
-  }
-
-
   ngAfterViewInit() {
     const input = document.getElementById('searchInput');
     const stream$ = fromEvent(input, 'keyup');
-    this.sub = stream$.pipe(
+    this.subscription = stream$.pipe(
       // @ts-ignore
-      map(item => item.target.value)
-    ).subscribe(val => {
-        if (val.length > 3) {
+      map((event: KeyboardEvent) => event.target.value)
+    ).subscribe(searchString => {
+        if (searchString.length > 3) {
           if (this.timeout) {
             clearTimeout(this.timeout);
           }
-          this.debounce(500, this.func(val));
+          this.debounce(500, this.startSearch(searchString));
         }
       }
     );
   }
 
-  stop() {
-    this.sub.unsubscribe();
-  }
-
-  debounce(ms, cb) {
+  debounce(delay, callback) {
     if (this.timeout) {
       clearTimeout(this.timeout);
     }
-    this.timeout = setTimeout(cb, ms);
+    this.timeout = setTimeout(callback, delay);
+  }
+
+  startSearch(searchString) {
+    return () => {
+      let searchRequest = '?q=';
+      searchRequest += searchString;
+      this.service.getSearch(searchRequest).subscribe((result: SearchResults) => {
+        this.searchResults = result;
+      });
+    };
   }
 
   ngOnDestroy(): void {
-    this.stop();
+    this.subscription.unsubscribe();
   }
 }
